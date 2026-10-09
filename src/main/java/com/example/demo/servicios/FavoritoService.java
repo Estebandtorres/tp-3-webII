@@ -33,15 +33,15 @@ public class FavoritoService {
                 .collect(Collectors.toList());
     }
 
-    public FavoritoResponseDto obtenerPorId(Long id) {
+    public FavoritoResponseDto obtenerPorId(Integer id) {
         Favorito favorito = favoritoRepository.buscarPorId(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el favorito con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontro el favorito con ID: " + id));
         return FavoritoMapper.toResponseDTO(favorito);
     }
 
-    public FavoritoResponseDto actualizar(Long id, FavoritoRequestDto requestDTO) {
+    public FavoritoResponseDto actualizar(Integer id, FavoritoRequestDto requestDTO) {
         Favorito existente = favoritoRepository.buscarPorId(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el favorito con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontro el favorito con ID: " + id));
         
         existente.setProductoId(requestDTO.productoId());
         existente.setNotaPersonal(requestDTO.notaPersonal());
@@ -50,9 +50,9 @@ public class FavoritoService {
         return FavoritoMapper.toResponseDTO(actualizado);
     }
 
-    public void eliminar(Long id) {
+    public void eliminar(Integer id) {
         if (!favoritoRepository.existeId(id)) {
-            throw new RecursoNoEncontradoException("No se encontró el favorito con ID: " + id);
+            throw new RecursoNoEncontradoException("No se encontro el favorito con ID: " + id);
         }
         favoritoRepository.borrarPorId(id);
     }

@@ -11,18 +11,18 @@ public class FavoritoMapper {
         Favorito favorito = new Favorito();
         favorito.setProductoId(requestDTO.productoId());
         favorito.setNotaPersonal(requestDTO.notaPersonal());
-        
+        favorito.setListaId(requestDTO.listaId());
         favorito.setFechaAgregado(LocalDateTime.now()); 
         return favorito;
     }
 
-    
     public static FavoritoResponseDto toResponseDTO(Favorito favorito) {
         return new FavoritoResponseDto(
                 favorito.getId(),
                 favorito.getProductoId(),
                 favorito.getNotaPersonal(),
-                favorito.getFechaAgregado()
+                favorito.getFechaAgregado(),
+                favorito.getListaId()
         );
     }
 }

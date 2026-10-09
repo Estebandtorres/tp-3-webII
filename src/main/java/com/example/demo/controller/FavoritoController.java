@@ -47,20 +47,20 @@ public class FavoritoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un favorito por ID", description = "Devuelve los detalles de un favorito especifico.")
-    public FavoritoResponseDto obtenerUno(@PathVariable Long id) {
+    public FavoritoResponseDto obtenerUno(@PathVariable Integer id) {
         return favoritoService.obtenerPorId(id);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un favorito", description = "Modifica el producto referenciado o la nota personal de un favorito existente.")
-    public FavoritoResponseDto actualizar(@PathVariable Long id, @Valid @RequestBody FavoritoRequestDto requestDTO) {
+    public FavoritoResponseDto actualizar(@PathVariable Integer id, @Valid @RequestBody FavoritoRequestDto requestDTO) {
         return favoritoService.actualizar(id, requestDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Eliminar un favorito", description = "Borra un favorito de la memoria a partir de su ID.")
-    public void eliminar(@PathVariable Long id) {
+    public void eliminar(@PathVariable Integer id) {
         favoritoService.eliminar(id);
     }
 }

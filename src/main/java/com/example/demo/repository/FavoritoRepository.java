@@ -7,8 +7,9 @@ import com.example.demo.model.Favorito;
 
 public interface FavoritoRepository {
     List<Favorito> buscarTodos();
-    Optional<Favorito> buscarPorId(Long id);
+    Optional<Favorito> buscarPorId(Integer id);
     Favorito guardar(Favorito favorito);
-    void borrarPorId(Long id);
-    boolean existeId(Long id);
+    void borrarPorId(Integer id);
+    boolean existeId(Integer id);
+    List<Favorito> buscarPorListaId(Integer listaId);
 }

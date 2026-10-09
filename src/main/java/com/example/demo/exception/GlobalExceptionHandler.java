@@ -1,7 +1,9 @@
 package com.example.demo.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,7 +45,7 @@ public class GlobalExceptionHandler {
             errores.put(error.getField(), error.getDefaultMessage());
         }
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, "Uno o más campos no son válidos");
+                HttpStatus.BAD_REQUEST, "Uno o más campos no son validos");
         problema.setTitle("Error de validación");
         problema.setProperty("errores", errores);
         return problema;
@@ -52,8 +54,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenerico(Exception ex) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
+                HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrio un error inesperado");
         problema.setTitle("Error interno");
         return problema;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT) // Esto devuelve el 409
+                .body("No se puede borrar la lista porque todavia tiene favoritos asociados. Debe estar vacia para poder eliminarse.");
     }
 }
