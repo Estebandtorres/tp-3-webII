@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Lista;
 import com.example.demo.repository.entity.ListaEntity;
+import com.example.demo.repository.entity.UsuarioEntity;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -50,7 +52,8 @@ public class ListaRepositoryAdapter implements ListaRepository {
     private Lista toDomain(ListaEntity entity) {
         return new Lista(
                 entity.getId(),
-                entity.getNombre()
+                entity.getNombre(),
+                entity.getUsuario().getId()
         );
     }
 
@@ -58,6 +61,21 @@ public class ListaRepositoryAdapter implements ListaRepository {
         ListaEntity entity = new ListaEntity();
         entity.setId(lista.getId());
         entity.setNombre(lista.getNombre());
+
+        // Creamos una referencia al usuario solo con su ID para poder guardarlo
+        if (lista.getUsuarioId() != null) {
+            UsuarioEntity usuarioRef = new UsuarioEntity();
+            usuarioRef.setId(lista.getUsuarioId());
+            entity.setUsuario(usuarioRef);
+        }
+
         return entity;
+    }
+
+    @Override
+    public List<Lista> buscarPorUsuarioId(Integer usuarioId) {
+        return jpaRepository.findByUsuarioId(usuarioId).stream()
+                .map(this::toDomain) // Usamos el método toDomain que ya tenés
+                .collect(Collectors.toList());
     }
 }

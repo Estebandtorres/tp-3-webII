@@ -13,6 +13,10 @@ public class ListaEntity {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private UsuarioEntity usuario;
+
     public ListaEntity() {
     }
 
@@ -30,5 +34,13 @@ public class ListaEntity {
 
     public void setNombre(String nombre) { 
         this.nombre = nombre; 
+    }
+
+    public UsuarioEntity getUsuario() { 
+        return usuario; 
+    }
+
+    public void setUsuario(UsuarioEntity usuario) { 
+        this.usuario = usuario; 
     }
 }

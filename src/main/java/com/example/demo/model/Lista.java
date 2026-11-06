@@ -4,14 +4,16 @@ public class Lista {
     
     private Integer id;
     private String nombre;
+    private Integer usuarioId;
 
     // Constructores
     public Lista() {
     }
 
-    public Lista(Integer id, String nombre) {
+    public Lista(Integer id, String nombre, Integer usuarioId) {
         this.id = id;
         this.nombre = nombre;
+        this.usuarioId = usuarioId;
     }
 
     public Integer getId() { 
@@ -28,5 +30,13 @@ public class Lista {
 
     public void setNombre(String nombre) { 
         this.nombre = nombre; 
+    }
+
+    public Integer getUsuarioId() { 
+        return usuarioId; 
+    }
+
+    public void setUsuarioId(Integer usuarioId) { 
+        this.usuarioId = usuarioId; 
     }
 }

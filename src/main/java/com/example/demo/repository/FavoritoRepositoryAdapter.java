@@ -7,7 +7,6 @@ import com.example.demo.repository.entity.ListaEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository

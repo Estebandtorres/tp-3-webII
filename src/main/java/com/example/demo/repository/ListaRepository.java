@@ -15,4 +15,6 @@ public interface ListaRepository {
     void borrarPorId(Integer id);
     
     boolean existeId(Integer id);
+
+    List<Lista> buscarPorUsuarioId(Integer usuarioId);
 }

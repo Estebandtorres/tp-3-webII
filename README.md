@@ -125,3 +125,13 @@ Al ejecutar la aplicación Spring Boot (desde el IDE o con `./mvnw spring-boot:r
 Para confirmar que las migraciones se aplicaron correctamente:
 1. **Revisar la consola de Spring Boot:** Al iniciar, busca líneas en los logs que digan algo como `Flyway Community Edition` y `Successfully applied 4 migrations to schema "public"`.
 2. **Revisar la base de datos:** Conéctate a tu base de datos `tp2_db` usando un cliente SQL (como pgAdmin o DBeaver) y busca una tabla especial llamada `flyway_schema_history`. Si le haces un `SELECT *`, verás un registro histórico detallado de los scripts `V1`, `V2`, `V3` y `V4` con el estado "Success".
+
+## Arquitectura de Seguridad y Autorización
+
+La lógica de autorización sobre los recursos (verificar que una lista le pertenezca al usuario autenticado o que este tenga el rol `ADMIN`) se encuentra centralizada en la capa **Service** (dentro de `ListaService`, mediante el método `obtenerYValidarAcceso`).
+
+Se eligió implementarla en el Service y no en el Controller por las siguientes razones:
+
+* **Separación de responsabilidades:** El Controller tiene como única función manejar la capa web (interceptar la petición HTTP, extraer el token/identidad y formatear la respuesta). Las reglas sobre quién puede ver o modificar un dato son lógica de negocio estricta y pertenecen al Service.
+* **Reusabilidad y consistencia:** Al encapsular la validación en el servicio, cualquier otro método o endpoint futuro que necesite operar sobre una lista pasará obligatoriamente por el mismo control de acceso, evitando duplicar código (`if/else`) en múltiples métodos del controlador.
+* **Manejo centralizado de excepciones:** El servicio lanza una excepción nativa de Spring Security (`AccessDeniedException`), permitiendo que el controlador simplemente la capture de forma limpia para devolver un `403 Forbidden` sin ensuciarse con validaciones manuales.

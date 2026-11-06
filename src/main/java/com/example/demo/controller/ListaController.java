@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.servicios.ListaService;
+import com.example.demo.servicios.dto.ListaMapper;
 import com.example.demo.servicios.dto.ListaRequestDto;
 import com.example.demo.servicios.dto.ListaResponseDto;
 import com.example.demo.servicios.dto.MoverFavoritosRequestDto;
@@ -9,11 +10,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.example.demo.model.Favorito;
+import com.example.demo.model.Lista;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -27,31 +31,43 @@ public class ListaController {
         this.listaService = listaService;
     }
 
-    // 1. Crear lista (POST /api/listas)
+    // Crea una lista
     @PostMapping
     @Operation(summary = "Crear una nueva lista", description = "Guarda una nueva lista con el nombre proporcionado.")
-    public ResponseEntity<ListaResponseDto> crearLista(@Valid @RequestBody ListaRequestDto request) {
-        ListaResponseDto nuevaLista = listaService.crearLista(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaLista);
-    }
+    public ResponseEntity<ListaResponseDto> crearLista(@Valid @RequestBody ListaRequestDto request, Authentication authentication) {
+    // Extraemos el email del token JWT
+    String emailUsuario = authentication.getName();
+    
+    // Le pasamos el DTO y el email al servicio
+    ListaResponseDto nuevaLista = listaService.crearLista(request, emailUsuario); 
+    
+    return ResponseEntity.status(HttpStatus.CREATED).body(nuevaLista);
+}
 
-    // 2. Listar listas (GET /api/listas)
+    // Trae todas las listas
     @GetMapping
-    @Operation(summary = "Listar todas las listas", description = "Devuelve todas las listas de favoritos existentes.")
-    public ResponseEntity<List<ListaResponseDto>> listarListas() {
-        return ResponseEntity.ok(listaService.listarTodas());
+    @Operation(summary = "Traer todas las listas", description = "Devuelve todas las listas de favoritos existentes.")
+    public ResponseEntity<List<ListaResponseDto>> listarListas(Authentication authentication) {
+        // Le pasamos el email extraído del token al servicio
+        List<ListaResponseDto> listas = listaService.listarListas(authentication.getName());
+        return ResponseEntity.ok(listas);
     }
 
-    // 3. Obtener una lista (GET /api/listas/{id})
+    // Obtiene una lista por id
     @GetMapping("/{id}")
     @Operation(summary = "Obtener una lista por ID", description = "Devuelve los detalles de una lista especifica por su ID.")
-    public ResponseEntity<ListaResponseDto> obtenerLista(@PathVariable Integer id) {
-        return listaService.obtenerLista(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> obtenerLista(@PathVariable Integer id, Authentication authentication) {
+        try {
+            Lista lista = listaService.obtenerListaPorId(id, authentication.getName());
+            return ResponseEntity.ok(ListaMapper.toResponseDto(lista));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
-    // 4. Favoritos de una lista (GET /api/listas/{id}/favoritos)
+    // Favoritos de una lista
     @GetMapping("/{id}/favoritos")
     @Operation(summary = "Obtener favoritos de una lista", description = "Devuelve todos los favoritos asociados a una lista especifica.")
     public ResponseEntity<List<Favorito>> obtenerFavoritosDeLista(@PathVariable Integer id) {
@@ -62,12 +78,18 @@ public class ListaController {
         }
     }
 
-    // 5. Eliminar una lista vacía (DELETE /api/listas/{id})
+    // Elimina una lista vacía
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar una lista vacia", description = "Elimina una lista especifica si no tiene favoritos asociados.")
-    public ResponseEntity<Void> eliminarLista(@PathVariable Integer id) {
-        listaService.eliminarLista(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> eliminarLista(@PathVariable Integer id, Authentication authentication) {
+        try {
+            listaService.eliminarLista(id, authentication.getName());
+            return ResponseEntity.noContent().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PostMapping("/{origenId}/mover-favoritos")
@@ -84,4 +106,5 @@ public class ListaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
 }
