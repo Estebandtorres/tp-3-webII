@@ -25,35 +25,35 @@ public class JwtService {
     private Long expiration;
 
     public String generarToken(Usuario usuario) {
-        // Convierte la clave secreta de tu properties en una llave criptográfica
+        
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         
         Date fechaCreacion = new Date();
         Date fechaExpiracion = new Date(fechaCreacion.getTime() + expiration);
 
         return Jwts.builder()
-                .subject(usuario.getEmail()) // Identificador principal
-                .claim("id", usuario.getId()) // Guardamos el ID para usarlo luego en la autorización
-                .claim("rol", usuario.getRol().name()) // Guardamos el rol (USER/ADMIN)
+                .subject(usuario.getEmail()) 
+                .claim("id", usuario.getId()) 
+                .claim("rol", usuario.getRol().name()) 
                 .issuedAt(fechaCreacion)
                 .expiration(fechaExpiracion)
-                .signWith(key) // Firmamos el token
+                .signWith(key) 
                 .compact();
     }
 
     public Claims extraerClaims(String token) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.parser()
-                .verifyWith(key) // Verifica la firma con nuestra clave
+                .verifyWith(key) 
                 .build()
                 .parseSignedClaims(token)
-                .getPayload(); // Devuelve el contenido (subject, claims, etc.)
+                .getPayload(); 
     }
 
     public boolean validarToken(String token) {
         try {
             extraerClaims(token);
-            return true; // Si no lanza excepción, la firma es válida y no expiró
+            return true; 
         } catch (Exception e) {
             return false;
         }

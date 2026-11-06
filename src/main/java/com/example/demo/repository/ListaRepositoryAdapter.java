@@ -48,7 +48,6 @@ public class ListaRepositoryAdapter implements ListaRepository {
         return jpaRepository.existsById(id);
     }
 
-    // --- Métodos privados para mapear entre Entidad y Dominio ---
     private Lista toDomain(ListaEntity entity) {
         return new Lista(
                 entity.getId(),
@@ -62,7 +61,6 @@ public class ListaRepositoryAdapter implements ListaRepository {
         entity.setId(lista.getId());
         entity.setNombre(lista.getNombre());
 
-        // Creamos una referencia al usuario solo con su ID para poder guardarlo
         if (lista.getUsuarioId() != null) {
             UsuarioEntity usuarioRef = new UsuarioEntity();
             usuarioRef.setId(lista.getUsuarioId());
@@ -75,7 +73,7 @@ public class ListaRepositoryAdapter implements ListaRepository {
     @Override
     public List<Lista> buscarPorUsuarioId(Integer usuarioId) {
         return jpaRepository.findByUsuarioId(usuarioId).stream()
-                .map(this::toDomain) // Usamos el método toDomain que ya tenés
+                .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 }

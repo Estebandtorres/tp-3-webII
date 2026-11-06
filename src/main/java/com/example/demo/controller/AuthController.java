@@ -28,7 +28,7 @@ public class AuthController {
             authService.registrar(request);
             return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado con éxito");
         } catch (IllegalArgumentException e) {
-            // Si el email ya existe, el servicio lanza esta excepción y devolvemos 409
+            
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
@@ -39,7 +39,7 @@ public class AuthController {
             String token = authService.login(request);
             return ResponseEntity.ok(new LoginResponseDto(token));
         } catch (IllegalArgumentException e) {
-            // Si el email no existe o la contraseña es incorrecta, devolvemos 401 Unauthorized
+            
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }

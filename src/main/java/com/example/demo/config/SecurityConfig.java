@@ -23,7 +23,7 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    // Registramos el PasswordEncoder para poder inyectarlo en nuestro servicio
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -35,7 +35,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Forzamos que los errores de autenticación devuelvan 401 Unauthorized en vez de 403
+            
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido, vencido o ausente");
@@ -43,7 +43,7 @@ public class SecurityConfig {
             )
             
             .authorizeHttpRequests(auth -> auth
-                // Agregamos las rutas de Swagger a los endpoints públicos
+                
                 .requestMatchers(
                     "/api/auth/**", 
                     "/api/productos/**",
@@ -52,7 +52,7 @@ public class SecurityConfig {
                     "/swagger-ui.html"
                 ).permitAll() 
                 
-                // Todo el resto de la aplicación exige un usuario autenticado
+                
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

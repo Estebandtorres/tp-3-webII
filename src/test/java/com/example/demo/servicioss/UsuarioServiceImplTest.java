@@ -1,8 +1,10 @@
 package com.example.demo.servicioss;
 
+
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.servicios.dto.RegistroRequestDto;
+import com.example.demo.servicios.AuthService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +29,11 @@ class UsuarioServiceImplTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private AuthService authService; // O UsuarioService, según dónde tengas el registro
+    private AuthService authService;
 
     @Test
     void registrar_credencialesValidas_nuncaGuardaPasswordEnTextoPlano() {
-        // GIVEN
+
         String passPlano = "secreto123";
         String passHash = "$2a$10$hashSimulado...";
         
@@ -39,11 +41,9 @@ class UsuarioServiceImplTest {
 
     when(passwordEncoder.encode(passPlano)).thenReturn(passHash);
 
-    // WHEN
-    // 2. Ejecutamos el método pasándole el DTO
     authService.registrar(request);
 
-        // THEN
+        
         ArgumentCaptor<Usuario> captor = ArgumentCaptor.forClass(Usuario.class);
         verify(usuarioRepository).guardar(captor.capture());
 

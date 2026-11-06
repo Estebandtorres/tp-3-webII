@@ -6,7 +6,6 @@ public class Lista {
     private String nombre;
     private Integer usuarioId;
 
-    // Constructores
     public Lista() {
     }
 

@@ -37,14 +37,13 @@ public Optional<Usuario> buscarPorId(Integer id) {
         return jpaRepository.existsByEmail(email);
     }
 
-    // --- Métodos de Mapeo Internos ---
+    
 
     private Usuario toDomain(UsuarioEntity entity) {
         return new Usuario(
                 entity.getId(),
                 entity.getEmail(),
                 entity.getPasswordHash(),
-                // Convertimos el String de la BD al Enum de tu dominio
                 Rol.valueOf(entity.getRol()) 
         );
     }
@@ -56,7 +55,6 @@ public Optional<Usuario> buscarPorId(Integer id) {
         entity.setPasswordHash(usuario.getPasswordHash());
         
         if (usuario.getRol() != null) {
-            // Convertimos el Enum de tu dominio a String para la BD
             entity.setRol(usuario.getRol().name());
         }
         

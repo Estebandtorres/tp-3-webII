@@ -10,7 +10,7 @@ import com.example.demo.client.dummyjson.DummyJsonProducto;
 import com.example.demo.client.dummyjson.DummyJsonProductosResponse;
 import com.example.demo.servicios.dto.ProductDto;
 
-@Service //indica que esta clase es un servicio de Spring y puede ser inyectada en otros componentes
+@Service 
 public class ProductService {
     
     private final RestClient restClient;

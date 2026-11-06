@@ -101,7 +101,6 @@ Es el archivo central del proyecto Maven: define versión de Spring Boot, versi�
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
-    <!-- Initializr también agrega las dependencias de prueba -->
 </dependencies>
 ```
 ⚠️ En Spring Boot 4.1 la dependencia es `spring-boot-starter-webmvc` (no `spring-boot-starter-web`, como en tutoriales viejos). No la reemplaces.

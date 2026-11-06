@@ -4,7 +4,7 @@ import com.example.demo.model.Lista;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.ListaRepository;
 import com.example.demo.repository.UsuarioRepository;
-import com.example.demo.servicios.ListaServiceImpl;
+import com.example.demo.servicios.ListaService;
 import com.example.demo.servicios.dto.ListaRequestDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,11 +29,10 @@ class ListaServiceImplTest {
     private UsuarioRepository usuarioRepository;
 
     @InjectMocks
-    private ListaServiceImpl listaService;
+    private ListaService listaService;
 
     @Test
     void crearLista_usuarioAutenticado_asociaListaAlUsuario() {
-        // GIVEN
         String email = "test@ejemplo.com";
         Usuario usuarioMock = new Usuario();
         usuarioMock.setId(5);
@@ -43,10 +42,8 @@ class ListaServiceImplTest {
         when(usuarioRepository.buscarPorEmail(email)).thenReturn(Optional.of(usuarioMock));
         when(listaRepository.guardar(any(Lista.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // WHEN
         listaService.crearLista(request, email);
 
-        // THEN
         ArgumentCaptor<Lista> captor = ArgumentCaptor.forClass(Lista.class);
         verify(listaRepository).guardar(captor.capture());
         

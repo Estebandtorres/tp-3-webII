@@ -31,29 +31,29 @@ public class ListaController {
         this.listaService = listaService;
     }
 
-    // Crea una lista
+    
     @PostMapping
     @Operation(summary = "Crear una nueva lista", description = "Guarda una nueva lista con el nombre proporcionado.")
     public ResponseEntity<ListaResponseDto> crearLista(@Valid @RequestBody ListaRequestDto request, Authentication authentication) {
-    // Extraemos el email del token JWT
+    
     String emailUsuario = authentication.getName();
     
-    // Le pasamos el DTO y el email al servicio
+    
     ListaResponseDto nuevaLista = listaService.crearLista(request, emailUsuario); 
     
     return ResponseEntity.status(HttpStatus.CREATED).body(nuevaLista);
 }
 
-    // Trae todas las listas
+    
     @GetMapping
     @Operation(summary = "Traer todas las listas", description = "Devuelve todas las listas de favoritos existentes.")
     public ResponseEntity<List<ListaResponseDto>> listarListas(Authentication authentication) {
-        // Le pasamos el email extraído del token al servicio
+        
         List<ListaResponseDto> listas = listaService.listarListas(authentication.getName());
         return ResponseEntity.ok(listas);
     }
 
-    // Obtiene una lista por id
+    
     @GetMapping("/{id}")
     @Operation(summary = "Obtener una lista por ID", description = "Devuelve los detalles de una lista especifica por su ID.")
     public ResponseEntity<?> obtenerLista(@PathVariable Integer id, Authentication authentication) {
@@ -67,7 +67,7 @@ public class ListaController {
         }
     }
 
-    // Favoritos de una lista
+    
     @GetMapping("/{id}/favoritos")
     @Operation(summary = "Obtener favoritos de una lista", description = "Devuelve todos los favoritos asociados a una lista especifica.")
     public ResponseEntity<List<Favorito>> obtenerFavoritosDeLista(@PathVariable Integer id) {
@@ -78,7 +78,7 @@ public class ListaController {
         }
     }
 
-    // Elimina una lista vacía
+    
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar una lista vacia", description = "Elimina una lista especifica si no tiene favoritos asociados.")
     public ResponseEntity<?> eliminarLista(@PathVariable Integer id, Authentication authentication) {
@@ -102,7 +102,7 @@ public class ListaController {
             listaService.moverFavoritosYBorrarOrigen(origenId, request.destinoId());
             return ResponseEntity.ok("Favoritos movidos exitosamente y lista origen eliminada.");
         } catch (IllegalArgumentException e) {
-            // Si el servicio lanza el error de que no existe alguna lista, devolvemos 404
+            
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

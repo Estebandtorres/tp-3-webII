@@ -12,17 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Manejador centralizado de errores de toda la API. En vez de que cada
- * controller arme su propio JSON de error, cualquier excepción que llegue
- * hasta acá se traduce a un mismo formato (ProblemDetail, RFC 7807):
- * { "status", "title", "detail", ... }.
- *
- * Cuando se implemente el controller de favoritos en clase, no hace falta
- * tocar esta clase: alcanza con que FavoritoService lance
- * RecursoNoEncontradoException o que el DTO de entrada tenga anotaciones
- * de Bean Validation para que estos mismos handlers respondan.
- */
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -62,7 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity
-                .status(HttpStatus.CONFLICT) // Esto devuelve el 409
+                .status(HttpStatus.CONFLICT) 
                 .body("No se puede borrar la lista porque todavia tiene favoritos asociados. Debe estar vacia para poder eliminarse.");
     }
 }

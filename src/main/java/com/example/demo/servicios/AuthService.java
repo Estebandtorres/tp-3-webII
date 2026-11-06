@@ -21,32 +21,32 @@ public class AuthService {
     }
 
     public void registrar(RegistroRequestDto request) {
-        // 1. Verificamos que el email no exista
+        
         if (usuarioRepository.existePorEmail(request.email())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
 
-        // 2. Hasheamos la contraseña
+        
         String passwordHasheada = passwordEncoder.encode(request.password());
 
-        // 3. Creamos el usuario con rol USER por defecto
+        
         Usuario nuevoUsuario = new Usuario(null, request.email(), passwordHasheada, Rol.USER);
 
-        // 4. Guardamos
+        
         usuarioRepository.guardar(nuevoUsuario);
     }
 
         public String login(LoginRequestDto request) {
-        // 1. Buscamos al usuario por email
+        
         Usuario usuario = usuarioRepository.buscarPorEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas"));
 
-        // 2. Verificamos que la contraseña plana coincida con el hash guardado
+        
         if (!passwordEncoder.matches(request.password(), usuario.getPasswordHash())) {
             throw new IllegalArgumentException("Credenciales inválidas");
         }
 
-        // 3. Generamos y devolvemos el JWT
+        
         return jwtService.generarToken(usuario);
     }
 }
